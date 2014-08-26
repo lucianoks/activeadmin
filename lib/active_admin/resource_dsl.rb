@@ -40,12 +40,24 @@ module ActiveAdmin
     #     end
     #   end
     #
-    def permit_params(*args, &block)
-      param_key = config.param_key.to_sym
 
+    # def permit_params(*args, &block)
+    #   param_key = config.param_key.to_sym
+
+    #   controller do
+    #     define_method :permitted_params do
+    #       params.permit param_key => block ? instance_exec(&block) : args
+    #     end
+    #   end
+    # end
+
+    def permit_params(*args, &block)
+      resource_sym = config.resource_name.singular.to_sym
       controller do
         define_method :permitted_params do
-          params.permit param_key => block ? instance_exec(&block) : args
+          params.permit :utf8, :authenticity_token, :commit, :_method, :id,
+                        resource_sym =>
+                        block ? instance_exec(&block) : args
         end
       end
     end
